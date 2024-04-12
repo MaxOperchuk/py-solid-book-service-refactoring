@@ -1,53 +1,43 @@
+from app.book import Book
 from app.displayers import ConsoleDisplayer, ReverseDisplayer
-from app.printers import ConsolePrint, ReversePrint
+from app.printers import ConsolePrinter, ReversePrinter
 from app.serializers import JsonSerializer, XmlSerializer
 
+DATA = {
+    "serialize": {
+        "json": JsonSerializer,
+        "xml": XmlSerializer,
+    },
+    "display": {
+        "console": ConsoleDisplayer,
+        "reverse": ReverseDisplayer,
 
-class Book:
-    def __init__(self, title: str, content: str) -> None:
-        self.title = title
-        self.content = content
+    },
+    "print": {
+        "console": ConsolePrinter,
+        "reverse": ReversePrinter,
+
+    },
+}
 
 
 def main(book: Book, commands: list[tuple[str, str]]) -> None | str:
     for cmd, method_type in commands:
+        class_obj = DATA[cmd][method_type]()
+
         if cmd == "display":
-            if method_type == "console":
-                displayer = ConsoleDisplayer()
-
-            elif method_type == "reverse":
-                displayer = ReverseDisplayer()
-
-            else:
-                raise ValueError(f"Unknown display type: {method_type}")
-
-            displayer.display(book.content)
+            class_obj.display(book)
 
         elif cmd == "print":
-            if method_type == "console":
-                printer = ConsolePrint()
-
-            elif method_type == "reverse":
-                printer = ReversePrint()
-
-            else:
-                raise ValueError(f"Unknown print type: {method_type}")
-
-            printer.print_book(book.title, book.content)
+            class_obj.print_book(book)
 
         elif cmd == "serialize":
-            if method_type == "json":
-                serializer = JsonSerializer()
+            return class_obj.serialize_book(book)
 
-            elif method_type == "xml":
-                serializer = XmlSerializer()
-
-            else:
-                raise ValueError(f"Unknown serialize type: {method_type}")
-
-            return serializer.serialize_book(book.title, book.content)
+        else:
+            raise ValueError(f"Unknown serialize type: {method_type}")
 
 
 if __name__ == "__main__":
     sample_book = Book("Sample Book", "This is some sample content.")
-    print(main(sample_book, [("display", "reverse"), ("serialize", "xml")]))
+    print(main(sample_book, [("print", "console"), ("serialize", "xml")]))

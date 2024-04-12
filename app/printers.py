@@ -1,25 +1,27 @@
 from abc import ABC, abstractmethod
 
+from app.book import Book
+
 
 class Printer(ABC):
 
     @staticmethod
     @abstractmethod
-    def print_book(book_title: str, book_content: str) -> None:
+    def print_book(book: Book) -> None:
         pass
 
 
-class ConsolePrint(Printer):
+class ConsolePrinter(Printer):
 
     @staticmethod
-    def print_book(book_title: str, book_content: str) -> None:
-        print(f"Printing the book: {book_title}...")
-        print(book_content)
+    def print_book(book: Book) -> None:
+        print(f"Printing the book: {book.title}...")
+        print(book.content)
 
 
-class ReversePrint(Printer):
+class ReversePrinter(Printer):
 
     @staticmethod
-    def print_book(book_title: str, book_content: str) -> None:
-        print(f"Printing the book in reverse: {book_title}...")
-        print(book_content[::-1])
+    def print_book(book: Book) -> None:
+        print(f"Printing the book in reverse: {book.title}...")
+        print(book.content[::-1])

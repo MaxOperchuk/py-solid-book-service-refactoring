@@ -3,6 +3,7 @@ from app.displayers import ConsoleDisplayer, ReverseDisplayer
 from app.printers import ConsolePrinter, ReversePrinter
 from app.serializers import JsonSerializer, XmlSerializer
 
+
 DATA = {
     "serialize": {
         "json": JsonSerializer,
@@ -23,21 +24,21 @@ DATA = {
 
 def main(book: Book, commands: list[tuple[str, str]]) -> None | str:
     for cmd, method_type in commands:
-        class_obj = DATA[cmd][method_type]()
+        selected_class = DATA[cmd][method_type]
 
         if cmd == "display":
-            class_obj.display(book)
+            selected_class.display(book)
 
         elif cmd == "print":
-            class_obj.print_book(book)
+            selected_class.print_book(book)
 
         elif cmd == "serialize":
-            return class_obj.serialize_book(book)
+            return selected_class.serialize_book(book)
 
         else:
-            raise ValueError(f"Unknown serialize type: {method_type}")
+            raise ValueError(f"Unknown command: {cmd}")
 
 
 if __name__ == "__main__":
     sample_book = Book("Sample Book", "This is some sample content.")
-    print(main(sample_book, [("print", "console"), ("serialize", "xml")]))
+    print(main(sample_book, [("display", "reverse"), ("serialize", "xml")]))
